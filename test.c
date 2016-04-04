@@ -2,15 +2,17 @@
 #include "tftdriver.h"
 #include "tftdraw.h"
 #include "ascii.h"
+#include <iostream>
 
 int main() {
+std::cout << "begin" << std::endl;
   //Setup SPI pins
   bcm2835_spi_begin();
-
+std::cout << "polarity" << std::endl;
   //Set CS pins polarity to low
   bcm2835_spi_setChipSelectPolarity(BCM2835_SPI_CS0, 0);
   bcm2835_spi_setChipSelectPolarity(BCM2835_SPI_CS1, 0);
-
+std::cout << "clock divider" << std::endl;
   //Set SPI clock speed
   //	BCM2835_SPI_CLOCK_DIVIDER_65536 = 0,       ///< 65536 = 262.144us = 3.814697260kHz (total H+L clock period)
   //	BCM2835_SPI_CLOCK_DIVIDER_32768 = 32768,   ///< 32768 = 131.072us = 7.629394531kHz
@@ -30,20 +32,24 @@ int main() {
   //	BCM2835_SPI_CLOCK_DIVIDER_2     = 2,       ///< 2 = 8ns = 125MHz, fastest you can get
   //	BCM2835_SPI_CLOCK_DIVIDER_1     = 1,       ///< 1 = 262.144us = 3.814697260kHz, same as 0/65536
   bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_128);
-
+std::cout << "data mode" << std::endl;
   //Set SPI data mode
   //	BCM2835_SPI_MODE0 = 0,  // CPOL = 0, CPHA = 0, Clock idle low, data is clocked in on rising edge, output data (change) on falling edge
   //	BCM2835_SPI_MODE1 = 1,  // CPOL = 0, CPHA = 1, Clock idle low, data is clocked in on falling edge, output data (change) on rising edge
   //	BCM2835_SPI_MODE2 = 2,  // CPOL = 1, CPHA = 0, Clock idle high, data is clocked in on falling edge, output data (change) on rising edge
   //	BCM2835_SPI_MODE3 = 3,  // CPOL = 1, CPHA = 1, Clock idle high, data is clocked in on rising, edge output data (change) on falling edge
   bcm2835_spi_setDataMode(BCM2835_SPI_MODE0);		//(SPI_MODE_# | SPI_CS_HIGH)=Chip Select active high, (SPI_MODE_# | SPI_NO_CS)=1 device per bus no Chip Select
-
+std::cout << "chip select" << std::endl;
   //Set with CS pin to use for next transfers
   bcm2835_spi_chipSelect(BCM2835_SPI_CS0);
 
+std::cout << "clear" << std::endl;
   clear_screen(Color::White);
+
+std::cout << "draw text1" << std::endl;
   char txt[] = "HOLA";
   draw_text(txt, 4, 0, 0);
+std::cout << "draw text2" << std::endl;
   char txt2[] = "QUE TAL";
   draw_text(txt2, 7, 0, 8);
 

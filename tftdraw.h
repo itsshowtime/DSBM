@@ -46,17 +46,27 @@ void draw_image(uint16_t **I, uint16_t width, uint16_t height, uint16_t x, uint1
 }
 
 void draw_char(char c, uint16_t x, uint16_t y) {
-  unsigned __int128 ascii = ascii_map[c-32]; // El mapa empieza en el caracter 32 (SPACE)
-  unsigned __int128 mask = 0x1;
+  ascii character = ascii_map[c-32]; // El mapa empieza en el caracter 32 (SPACE)
+  uint64_t mask = 0x100000;
   uint8_t counter = 0;
   while (mask > 0) {
     uint16_t xpos = x + counter%Size_X;
     uint16_t ypos = y + counter/Size_X;
 
-    if (ascii & mask)
+    if (character.high & mask)
       draw_pixel(xpos , ypos , Color::Black);
 
-    mask = mask << 1;
+    mask = mask >> 1;
+  }
+  mask = 0x100000;
+  while (mask > 0) {
+    uint16_t xpos = x + counter%Size_X;
+    uint16_t ypos = y+4 + counter/Size_X;
+
+    if (character.low & mask)
+      draw_pixel(xpos , ypos , Color::Black);
+
+    mask = mask >> 1;
   }
 }
 
