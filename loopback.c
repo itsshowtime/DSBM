@@ -1,4 +1,3 @@
-#include "spi.h"
 #include <bcm2835.h>
 #include <iostream>
 

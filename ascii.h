@@ -1,10 +1,15 @@
 #ifndef ASCII_H
 #define ASCII_H
 
+// ASCII characters are defined as a 8x8 logic matrix
+// Values are separated into upper and lower path of the characters because of errors with uint128_t
+// Each character starts at its upper left corner
+
 typedef struct {
   uint64_t high, low;
 } ascii;
-ascii ascii_map[] = {
+
+const ascii ascii_map[] = {
   {0x00000000,0x00000000}, // SPACE
   {0x18181818,0x18001800}, // !
   {0x6C6C6C00,0x00000000}, // "
