@@ -3,6 +3,7 @@
 
 #include "tftdriver.h"
 #include "ascii.h"
+#include <iostream>
 
 enum Color : uint16_t {
   White = 0xFFFF,
@@ -13,11 +14,11 @@ enum Color : uint16_t {
 };
 
 struct rect {
-  uint16_t left, top;
+  uint16_t left, bottom;
   uint16_t width, height;
 };
 
-void draw_pixel(uint16_t x, uint16_t y, uint16_t color) {
+void draw_pixel(uint16_t y, uint16_t x, uint16_t color) {
   // Sets a Pixel X,Y to a Color
 
   Write_SPI_TFT_Reg(0x03,(x>>0));
@@ -29,13 +30,13 @@ void draw_pixel(uint16_t x, uint16_t y, uint16_t color) {
 }
 
 void draw_rect(rect r, uint16_t color) {
-  for (uint16_t y = r.top; y < r.top + r.height; ++y)
+  for (uint16_t y = r.bottom; y < r.bottom + r.height; ++y)
     for (uint16_t x = r.left; x < r.left + r.width; ++x)
       draw_pixel(x, y, color);
 }
 
 void clear_screen(uint16_t color) {
-  rect screen = {0, 0, Size_X, Size_Y};
+  rect screen = {0, 0, Size_Y, Size_X};
   draw_rect(screen, color);
 }
 
@@ -47,32 +48,34 @@ void draw_image(uint16_t **I, uint16_t width, uint16_t height, uint16_t x, uint1
 
 void draw_char(char c, uint16_t x, uint16_t y) {
   ascii character = ascii_map[c-32]; // El mapa empieza en el caracter 32 (SPACE)
-  uint64_t mask = 0x100000;
+  uint64_t mask = 0x80000000;
   uint8_t counter = 0;
   while (mask > 0) {
-    uint16_t xpos = x + counter%Size_X;
-    uint16_t ypos = y + counter/Size_X;
-
+    uint16_t xpos = x + counter%8;
+    uint16_t ypos = y - counter/8;
     if (character.high & mask)
       draw_pixel(xpos , ypos , Color::Black);
 
     mask = mask >> 1;
+    ++counter;
   }
-  mask = 0x100000;
+  counter = 0;
+  mask = 0x80000000;
   while (mask > 0) {
-    uint16_t xpos = x + counter%Size_X;
-    uint16_t ypos = y+4 + counter/Size_X;
+    uint16_t xpos = x + counter%8;
+    uint16_t ypos = y-4 - counter/8;
 
     if (character.low & mask)
       draw_pixel(xpos , ypos , Color::Black);
 
     mask = mask >> 1;
+    ++counter;
   }
 }
 
-void draw_text(char txt[], uint8_t size, uint16_t x, uint16_t y) {
+void draw_text(char *txt, uint8_t size, uint16_t x, uint16_t y) {
   for (uint8_t i = 0; i < size; ++i)
-    draw_char(txt[i], x, y);
+    draw_char(txt[i], x+8*i, y);
 }
 
 #endif // TFTDRAW_H

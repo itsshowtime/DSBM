@@ -1,6 +1,7 @@
 #ifndef TFTDRIVER_H
 #define TFTDRIVER_H
 
+#include "spi.h"
 #include <bcm2835.h>
 #include <unistd.h> // usleep
 #include <iostream> // cout
@@ -11,11 +12,10 @@
 #define SDO_Pin   RPI_V2_GPIO_P1_21 // MISO
 #define SDI_Pin   RPI_V2_GPIO_P1_19 // MOSI
 
-void Reset_TFT(bool value) {
-  if (value)
-    bcm2835_gpio_write(Reset_Pin, HIGH);
-  else
-    bcm2835_gpio_write(Reset_Pin, LOW);
+void Reset_TFT(uint8_t value) {
+std::cout << "write" << std::endl;
+  bcm2835_gpio_write(Reset_Pin, value);
+std::cout << "end" << std::endl;
 }
 
 // SPI Level Functions
@@ -26,34 +26,23 @@ void Reset_TFT(bool value) {
 #define SPI_DATA 0x02
 #define SPI_INDEX 0x00
 
-void CS_TFT(bool value) {
-  if (value)
-    bcm2835_gpio_write(CS_Pin, HIGH);
-  else
-    bcm2835_gpio_write(CS_Pin, LOW);
-}
-
-uint8_t Write_SPI_TFT_Cmd(uint8_t reg) {
+void Write_SPI_TFT_Cmd(uint8_t reg) {
   // reg is 8 bit
 
   // Send Start, Write, Index
-  CS_TFT(false);
-  bcm2835_spi_transfer(SPI_START);
+  SpiWrite(0, SPI_START);
   // Send the value
-  bcm2835_spi_transfer(reg);
-  CS_TFT(true);
+  SpiWrite(0, reg);
 }
 
 void Write_SPI_TFT_Dat(uint16_t value) {
   // value is 16 bit
 
   // Send Start, Write, Data
-  CS_TFT(false);
-  bcm2835_spi_transfer(0x72); // por que no es SPI_START? Yo pondria: SPI_START | SPI_DATA
+  SpiWrite(0, 0x72); // por que no es SPI_START? Yo pondria: SPI_START | SPI_DATA
   // Send the value
-  bcm2835_spi_transfer(value>>8);
-  bcm2835_spi_transfer(value);
-  CS_TFT(true);
+  SpiWrite(0, value>>8);
+  SpiWrite(0, value);
 }
 
 void Write_SPI_TFT_Reg(uint8_t reg, uint16_t value) {
@@ -66,7 +55,7 @@ void Write_SPI_TFT_Reg(uint8_t reg, uint16_t value) {
 uint8_t Read_SPI_TFT_Reg(uint8_t reg) {
 
   // Sets a value to a reg
-  Write_SPI_TFT_Cmd(reg);
+  //return Write_SPI_TFT_Cmd(reg);
   return 0x00;
 }
 
@@ -77,13 +66,16 @@ uint16_t Size_X = 240;
 uint16_t Size_Y = 320;
 
 void SPI_TFT_Reset() {
+std::cout << "reset tft" << std::endl;
   // Reset the TFT
   bcm2835_gpio_fsel(Reset_Pin, BCM2835_GPIO_FSEL_OUTP);
   Reset_TFT(false);
   usleep(250000); // para 0.25s -> 250ms -> 250000us -> 250000000ns
   Reset_TFT(true);
   usleep(6000); // para 0.006s -> 6ms -> 6000us -> 6000000ns
+std::cout << "driver code" << std::endl;
   uint8_t driverCode = Read_SPI_TFT_Reg(0x00); // esto no se usa
+std::cout << "reset sequence" << std::endl;
   // Start Initial Sequence
   Write_SPI_TFT_Reg(0xEA, 0x0000);    // Reset Power Control 1
   Write_SPI_TFT_Reg(0xEB, 0x0020);    // Power Control 2
@@ -159,7 +151,7 @@ void SPI_TFT_Reset() {
   Write_SPI_TFT_Reg(0x07,(Orig_Y>>0));
   Write_SPI_TFT_Reg(0x06,(Orig_Y>>8));
   Write_SPI_TFT_Reg(0x09,((Size_Y-1)>>0));
-  Write_SPI_TFT_Reg(0x08,((Size_Y-1)>>8));
+  Write_SPI_TFT_Reg(0x08,((Size_Y-1)>>8)); // PROBAR PRIORIDAD DE OPERADORES
 }
 
 #endif // TFTDRIVER_H
