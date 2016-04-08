@@ -16,8 +16,8 @@ namespace Screen {
   uint8_t getOrientation();
 
   // Returns screen width and height keeping track of its orientation
-  uint8_t getWidth();
-  uint8_t getHeight();
+  uint16_t getWidth();
+  uint16_t getHeight();
 
   // Set all pixels of the screen to the given color
   void clear(uint16_t color);

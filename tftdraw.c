@@ -3,8 +3,8 @@
 uint8_t Screen::orientation = HORIZONTAL;
 
 uint8_t Screen::getOrientation() { return orientation; }
-uint8_t Screen::getWidth() { return orientation == VERTICAL? TFT::Size_X : TFT::Size_Y; }
-uint8_t Screen::getHeight() { return orientation == VERTICAL? TFT::Size_Y : TFT::Size_X; }
+uint16_t Screen::getWidth() { return orientation == VERTICAL? TFT::Size_X : TFT::Size_Y; }
+uint16_t Screen::getHeight() { return orientation == VERTICAL? TFT::Size_Y : TFT::Size_X; }
 
 void Screen::draw_pixel(uint16_t x, uint16_t y, uint16_t color) {
   if (orientation == VERTICAL)

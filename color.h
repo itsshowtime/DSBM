@@ -9,9 +9,9 @@ enum Color : uint16_t {
   Red     = 0xF800,
   Yellow  = 0xFFE0,
   Green   = 0x07E0,
-  Magenta = 0x07FF,
+  Cyan	  = 0x07FF,
   Blue    = 0x001F,
-  Cyan    = 0xF81F
+  Magenta = 0xF81F
 };
 
 #endif // COLOR_H
