@@ -68,7 +68,8 @@ const ascii ascii_map[] = {
   {0xC6C6C6C6,0xD6FE6C00}, // W
   {0xC6C66C38,0x6CC6C600}, // X
   {0xC6C6C67C,0x1830E000}, // Y
-  {0xFE060C18,0x3060FE00}  // Z
+  {0xFE060C18,0x3060FE00}, // Z
+  {0x9E9090FE,0x1212F200}  // [ ... quizas no
   // Faltan simbolos
 };
 
