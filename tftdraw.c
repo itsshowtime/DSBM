@@ -50,7 +50,7 @@ void Screen::draw_char(char c, uint16_t x, uint16_t y, uint16_t color) {
   }
 }
 
-void Screen::draw_text(char *txt, uint8_t size, uint16_t x, uint16_t y) {
+void Screen::draw_text(const char *txt, uint8_t size, uint16_t x, uint16_t y) {
   for (uint8_t i = 0; i < size; ++i)
     draw_char(txt[i], x+8*i, y);
 }

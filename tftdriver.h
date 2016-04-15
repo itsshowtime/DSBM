@@ -37,7 +37,7 @@ namespace TFT {
 /////////////////////////
 
   // Write the SPI command on reg and read from SPI bus
-  uint8_t Write_SPI_Cmd(uint8_t reg);
+  void Write_SPI_Cmd(uint8_t reg);
 
   // Write the SPI data from value
   void Write_SPI_Dat(uint16_t value);

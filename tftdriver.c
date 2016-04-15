@@ -19,7 +19,7 @@ void TFT::setCS(bool value) {
     bcm2835_gpio_write(CS_Pin, LOW);
 }
 
-uint8_t TFT::Write_SPI_Cmd(uint8_t reg) {
+void TFT::Write_SPI_Cmd(uint8_t reg) {
   // reg is 8 bit
 
   // Send Start, Write, Index
@@ -57,13 +57,23 @@ uint8_t TFT::Read_SPI_Reg(uint8_t reg) {
 }
 
 void TFT::SPI_Reset() {
+  // Start SPI module
+  bcm2835_spi_begin();
+  bcm2835_spi_setBitOrder(BCM2835_SPI_BIT_ORDER_MSBFIRST);
+  bcm2835_spi_setDataMode(BCM2835_SPI_MODE0);
+  bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_16);
+  bcm2835_spi_chipSelect(BCM2835_SPI_CS_NONE); // We need to change CS_Pin manualy because it causes problems otherwise
+  bcm2835_spi_setChipSelectPolarity(BCM2835_SPI_CS0, LOW);
+  bcm2835_gpio_fsel(CS_Pin, BCM2835_GPIO_FSEL_OUTP);
+  bcm2835_gpio_write(CS_Pin, LOW);
+
   // Reset the TFT
   bcm2835_gpio_fsel(Reset_Pin, BCM2835_GPIO_FSEL_OUTP);
   setReset(false);
   usleep(250000); // para 0.25s -> 250ms -> 250000us -> 250000000ns
   setReset(true);
   usleep(6000); // para 0.006s -> 6ms -> 6000us -> 6000000ns
-  uint8_t driverCode = Read_SPI_Reg(0x00); // esto no se usa
+  Read_SPI_Reg(0x00); // esto no se usa
   // Start Initial Sequence
   Write_SPI_Reg(0xEA, 0x0000);    // Reset Power Control 1
   Write_SPI_Reg(0xEB, 0x0020);    // Power Control 2

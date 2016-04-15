@@ -32,7 +32,7 @@ namespace Screen {
   // Draws c at (x,y) in the given color
   void draw_char(char c, uint16_t x, uint16_t y, uint16_t color);
   // Draws the string under txt at (x,y) in black
-  void draw_text(char *txt, uint8_t size, uint16_t x, uint16_t y);
+  void draw_text(const char *txt, uint8_t size, uint16_t x, uint16_t y);
 
   // ???
   void draw_image(uint16_t **I, uint16_t width, uint16_t height, uint16_t x, uint16_t y);

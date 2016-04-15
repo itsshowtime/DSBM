@@ -11,14 +11,6 @@
 int main() {
 
   bcm2835_init();
-  bcm2835_spi_begin();
-  bcm2835_spi_setBitOrder(BCM2835_SPI_BIT_ORDER_MSBFIRST);
-  bcm2835_spi_setDataMode(BCM2835_SPI_MODE0);
-  bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_8);
-  bcm2835_spi_chipSelect(BCM2835_SPI_CS_NONE); // We need to change CS_Pin manualy because it causes problems otherwise
-  bcm2835_spi_setChipSelectPolarity(BCM2835_SPI_CS0, LOW);
-  bcm2835_gpio_fsel(CS_Pin, BCM2835_GPIO_FSEL_OUTP);
-  bcm2835_gpio_write(CS_Pin, LOW);
   TFT::SPI_Reset();
 
   char row0_5[]   = "     [[[[[[[[[[[[[[[[[[      [[[[[[     ";
@@ -59,7 +51,10 @@ int main() {
   Screen::draw_text(row24_29, sizeof(row0_5)-1, 0, 216);
   Screen::draw_text(row24_29, sizeof(row0_5)-1, 0, 224);
   Screen::draw_text(row24_29, sizeof(row0_5)-1, 0, 232);
-
+ 
+  char test[] = "ESTO ES UN TEST";
+  Screen::draw_text(test, sizeof(test)-1, 0, 240);
+  
 
   bcm2835_spi_end();
   bcm2835_close();
