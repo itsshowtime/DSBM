@@ -4,13 +4,16 @@ LFLAGS= -lbcm2835
 
 OBJ= ./bin
 
-all: rect tftdriver tftdraw whoread test_draw main_layout test_draw_v2 clearscreen jfons
+all: rect tftdriver tftdraw whoread ad_driver test_draw main_layout test_draw_v2 clearscreen jfons test_ad
 
 rect: rect.c
 	$(CC) -c rect.c $(CFLAGS) -o $@.o
 
 whoread: whoread.c
 	$(CC) -c whoread.c $(CFLAGS) -o $@.o
+
+ad_driver: ad_driver.c
+	$(CC) -c ad_driver.c $(CFLAGS) -o $@.o
 
 tftdriver: tftdriver.c
 	$(CC) -c tftdriver.c $(CFLAGS) -o $@.o
@@ -34,11 +37,13 @@ clearscreen: clearscreen.c tftdriver.o tftdraw.o rect.o
 	$(CC) -c clearscreen.c $(CFLAGS) -o $@.o
 	$(CC) -o clearscreen.exe $@.o tftdriver.o tftdraw.o rect.o $(LFLAGS)
 
-
 jfons: test_jfons.c tftdriver.o tftdraw.o rect.o
 	$(CC) -c test_jfons.c $(CFLAGS) -o $@.o
 	$(CC) -o test_jfons.exe $@.o tftdriver.o tftdraw.o rect.o $(LFLAGS)
 
+test_ad: test_ad.c ad_driver.o
+	$(CC) -c test_ad.c $(CFLAGS) -o $@.o
+	$(CC) -o test_ad.exe $@.o ad_driver.o $(LFLAGS)
 
 clean:
 	rm -rf *.o *.exe

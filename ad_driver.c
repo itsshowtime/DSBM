@@ -49,9 +49,9 @@ uint16_t AD::readX() {
   uint16_t data = 0x00;
   for (int i = 11; i >= 0; --i) {
     bcm2835_gpio_write(CLK_Pin, HIGH);  // Recieve B[i]
-    bcm2835_gpio_write(CLK_Pin, LOW);
     uint8_t read = bcm2835_gpio_lev(MISO_Pin);
-    data = data<<1 | read&0x1;
+    data = (data<<1) | (read&0x1);
+    bcm2835_gpio_write(CLK_Pin, LOW);
   }
 
   bcm2835_gpio_write(CS_Pin, HIGH);
@@ -69,8 +69,8 @@ uint16_t AD::readY() {
   bcm2835_gpio_fsel(ypos_Pin, BCM2835_GPIO_FSEL_OUTP);
   bcm2835_gpio_fsel(yneg_Pin, BCM2835_GPIO_FSEL_OUTP);
 
-  bcm2835_gpio_write(yneg_Pin, LOW);
-  bcm2835_gpio_write(ypos_Pin, HIGH);
+  bcm2835_gpio_write(yneg_Pin, HIGH);
+  bcm2835_gpio_write(ypos_Pin, LOW);
 
   // Start transaction
   bcm2835_gpio_write(CS_Pin, LOW);
@@ -99,9 +99,9 @@ uint16_t AD::readY() {
   uint16_t data = 0x00;
   for (int i = 11; i >= 0; --i) {
     bcm2835_gpio_write(CLK_Pin, HIGH);  // Recieve B[i]
-    bcm2835_gpio_write(CLK_Pin, LOW);
     uint8_t read = bcm2835_gpio_lev(MISO_Pin);
-    data = data<<1 | read&0x1;
+    data = (data<<1) | (read&0x1);
+    bcm2835_gpio_write(CLK_Pin, LOW);
   }
 
   bcm2835_gpio_write(CS_Pin, HIGH);
